@@ -1,0 +1,65 @@
+from tensorflow.keras.models import load_model
+from utils.image_processing import  preprocess_image
+
+image_classifier = load_model(
+    "models/imageprocess_model.h5"
+)
+
+pneumonia_model = load_model(
+    "models/pneumonia_model.h5"
+)
+
+brain_model = load_model(
+    "models/brain-tumor_model.h5"
+)
+
+breast_model = load_model(
+    "models/breast-cancer_model.h5"
+)
+
+IMAGE_TYPES = [
+    "Chest Xray",
+    "Brain MRI",
+    "Breast Cancer"
+]
+
+def predict_image_type(image):
+
+    img = preprocess_image(image)
+
+    pred = image_classifier.predict(img)
+
+    idx = pred.argmax()
+
+    return IMAGE_TYPES[idx]
+def predict_disease(image):
+
+    image_type = predict_image_type(image)
+
+    img = preprocess_image(image)
+
+    if image_type == "Chest Xray":
+
+        p = pneumonia_model.predict(img)[0][0]
+
+        disease = "Pneumonia" if p > 0.5 else "Normal"
+
+        confidence = float(max(p, 1-p) * 100)
+
+    elif image_type == "Brain MRI":
+
+        p = brain_model.predict(img)[0][0]
+
+        disease = "Tumor" if p > 0.5 else "No Tumor"
+
+        confidence = float(max(p, 1-p) * 100)
+
+    else:
+
+        p = breast_model.predict(img)[0][0]
+
+        disease = "Malignant" if p > 0.5 else "Benign"
+
+        confidence = float(max(p, 1-p) * 100)
+
+    return image_type, disease, confidence
