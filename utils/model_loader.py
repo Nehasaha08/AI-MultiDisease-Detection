@@ -2,7 +2,7 @@ import os
 from huggingface_hub import hf_hub_download
 from tensorflow.keras.models import load_model
 
-REPO_ID = "nehasaha08/ai-multidisease-models"
+REPO_ID = "nehasaha08/ai-multidisease-models/tree/main/models"
 
 os.makedirs("models", exist_ok=True)
 
