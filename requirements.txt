@@ -20,7 +20,7 @@ gast
 flatbuffers
 libclang
 ml-dtypes
-
+huggingface_hub
 streamlit
 altair
 pyarrow
