@@ -1,22 +1,28 @@
+```python
 import sqlite3
+import os
+
+# Database location
+DB_DIR = "database"
+DB_PATH = os.path.join(DB_DIR, "prediction_history.db")
+
 
 def create_prediction_table():
+    # Create database folder if it doesn't exist
+    os.makedirs(DB_DIR, exist_ok=True)
 
-    conn = sqlite3.connect(
-        "database/prediction_history.db"
-    )
-
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS history(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT,
-        image_type TEXT,
-        disease TEXT,
-        confidence REAL,
-        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
+        CREATE TABLE IF NOT EXISTS history(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT,
+            image_type TEXT,
+            disease TEXT,
+            confidence REAL,
+            date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
     """)
 
     conn.commit()
@@ -24,23 +30,22 @@ def create_prediction_table():
 
 
 def save_prediction(
-        username,
-        image_type,
-        disease,
-        confidence):
+    username,
+    image_type,
+    disease,
+    confidence
+):
+    # Make sure folder exists
+    os.makedirs(DB_DIR, exist_ok=True)
 
-    conn = sqlite3.connect(
-        "database/prediction_history.db"
-    )
-
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     cursor.execute("""
-    INSERT INTO history
-    (username,image_type,disease,confidence)
-    VALUES(?,?,?,?)
-    """,
-    (
+        INSERT INTO history
+        (username, image_type, disease, confidence)
+        VALUES (?, ?, ?, ?)
+    """, (
         username,
         image_type,
         disease,
@@ -52,11 +57,9 @@ def save_prediction(
 
 
 def get_history(username):
+    os.makedirs(DB_DIR, exist_ok=True)
 
-    conn = sqlite3.connect(
-        "database/prediction_history.db"
-    )
-
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     cursor.execute(
@@ -69,3 +72,4 @@ def get_history(username):
     conn.close()
 
     return data
+```
