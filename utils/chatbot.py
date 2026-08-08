@@ -1,4 +1,4 @@
-```python
+
 import os
 import requests
 from dotenv import load_dotenv
@@ -12,7 +12,7 @@ API_URL = "https://router.huggingface.co/v1/chat/completions"
 
 def ask_medical_ai(question):
 
-    # TEST: confirms this function is actually being called
+   
     print("CHATBOT FUNCTION CALLED:", question)
 
     if not HF_TOKEN:
@@ -66,4 +66,4 @@ def ask_medical_ai(question):
 
     except Exception as e:
         return f"AI Error: {str(e)}"
-```
+
