@@ -1,21 +1,21 @@
-```python
 import sqlite3
 import os
 
-# Database location
-DB_DIR = "database"
-DB_PATH = os.path.join(DB_DIR, "prediction_history.db")
+
+DB_PATH = "database/prediction_history.db"
+
+
+def get_connection():
+    os.makedirs("database", exist_ok=True)
+    return sqlite3.connect(DB_PATH)
 
 
 def create_prediction_table():
-    # Create database folder if it doesn't exist
-    os.makedirs(DB_DIR, exist_ok=True)
-
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS history(
+        CREATE TABLE IF NOT EXISTS history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT,
             image_type TEXT,
@@ -29,16 +29,8 @@ def create_prediction_table():
     conn.close()
 
 
-def save_prediction(
-    username,
-    image_type,
-    disease,
-    confidence
-):
-    # Make sure folder exists
-    os.makedirs(DB_DIR, exist_ok=True)
-
-    conn = sqlite3.connect(DB_PATH)
+def save_prediction(username, image_type, disease, confidence):
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -57,19 +49,18 @@ def save_prediction(
 
 
 def get_history(username):
-    os.makedirs(DB_DIR, exist_ok=True)
-
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute(
-        "SELECT * FROM history WHERE username=?",
-        (username,)
-    )
+    cursor.execute("""
+        SELECT *
+        FROM history
+        WHERE username = ?
+        ORDER BY date DESC
+    """, (username,))
 
     data = cursor.fetchall()
 
     conn.close()
 
     return data
-```
