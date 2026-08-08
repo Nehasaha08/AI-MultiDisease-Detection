@@ -1,7 +1,7 @@
 import requests
 from dotenv import load_dotenv
 load_dotenv()
-HF_TOKEN ="HF"
+HF_TOKEN = os.getenv("HF_TOKEN")
 
 API_URL = "https://router.huggingface.co/v1/chat/completions"
 
